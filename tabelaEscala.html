@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização da Escala</title>
+    <!-- Importando o jQuery via CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        td {
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-folga {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .badge-trabalho {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tabela de Escala</h1>
+        
+        <div class="table-responsive">
+            <table id="tabelaEscala">
+                <thead>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Mês</th>
+                        <th>Ano</th>
+                        <th>Dia F/T</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Os dados do JSON serão injetados aqui via jQuery -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Exemplo do Objeto JSON recebido
+        const dadosEscala = {
+            "0": { "day": 1, "mes": "Outubro", "ano": 2026, "diaFT": "1", "tipo": "F" },
+            "1": { "day": 2, "mes": "Outubro", "ano": 2026, "diaFT": "2", "tipo": "F" },
+            "2": { "day": 3, "mes": "Outubro", "ano": 2026, "diaFT": "1", "tipo": "T" },
+            "3": { "day": 4, "mes": "Outubro", "ano": 2026, "diaFT": "2", "tipo": "T" },
+            "4": { "day": 5, "mes": "Outubro", "ano": 2026, "diaFT": "3", "tipo": "T" }
+        };
+
+        $(document).ready(function() {
+            const tbody = $('#tabelaEscala tbody');
+            tbody.empty();
+
+            // Percorre cada item do objeto JSON utilizando jQuery.each
+            $.each(dadosEscala, function(index, item) {
+                // Valida se o item possui as propriedades esperadas (ignorando chaves extras se houver)
+                if (item && typeof item === 'object' && 'day' in item) {
+                    const tipoTexto = item.tipo === 'F' ? 'Folga' : 'Trabalho';
+                    const badgeClass = item.tipo === 'F' ? 'badge-folga' : 'badge-trabalho';
+                    
+                    const linha = `
+                        <tr>
+                            <td>${item.day}</td>
+                            <td>${item.mes}</td>
+                            <td>${item.ano}</td>
+                            <td>${item.diaFT}º dia</td>
+                            <td><span class="badge ${badgeClass}">${tipoTexto}</span></td>
+                        </tr>
+                    `;
+                    tbody.append(linha);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
