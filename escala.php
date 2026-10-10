@@ -1,17 +1,23 @@
 <?php
+
+//    header('Content-Type: application/json; charset=utf-8');
+
     //ARGUMENTOS DE ENTRADA
     $day    = 1;   // DIA DO MES GET(DATE).DAY
     $month  = 10;
     $year   = 2026;
 
+    $DFT = explode("_", $_POST['dia_escala']);
+
     //FT Folga ou Trabalho
-    $dia_FT     = $_GET['dia_FT'];
-    $tipo       = $_GET['tipo'];
+    $diaFT  = $DFT[0];
+    $tipo   = $DFT[1];
+
     /*
     $semana     = $_GET['semana'] OR " ";
     $mes        = $_GET['mes'] OR " ";
     $bissexto   = $_GET['bissexto'] OR " ";
-    */
+    */    
 
     //DADOS FIXOS
     //DIAS DA SEMANA
@@ -50,34 +56,36 @@
     $ultimo_dia_do_mes[10]  = 31;
     $ultimo_dia_do_mes[11]  = 30;
     $ultimo_dia_do_mes[12]  = 31;
-    
-    if ( $dia_FT > 2 && $tipo == "F" ) {
+
+    //VALIDAÇÕES DE PARAMETROS DE ENTRADA "REDUNDANTES"
+    if ( $diaFT > 2 && $tipo == "F" ) {
         echo "Erro - Folga não pode ser maior que 2 dias";
         return;
     }
 
-    if ( $dia_FT > 4 && $tipo == "T" ) {
+    if ( $diaFT > 4 && $tipo == "T" ) {
         echo "Erro - Trabalho não pode ser maior que 4 dias";
         return;
     }
-   
+
     while ( $day < $ultimo_dia_do_mes[$month] ) { 
-        
-        if (  $dia_FT > 0 && $dia_FT < 3 && $tipo == "F" ) {
-            echo "Dia - $day de $mes[$month] , Folga : $dia_FT <br>";
-            $dia_FT++;                                               
+
+        if (  $diaFT > 0 && $diaFT < 3 && $tipo == "F" ) {
+            echo "$day de $mes[$month] , $diaFT º dia de Folga <br>";
+            $diaFT++;                                               
             $day++;
-            if ( $dia_FT > 2 ) {
-                $dia_FT = 1;
+            if ( $diaFT > 2 ) {
+                $diaFT = 1;
                 $tipo   = "T";
             }            
-        } else if ( $dia_FT > 0 && $dia_FT < 5 && $tipo == "T") {
-            echo "Dia - $day de $mes[$month] , Trabalho : $dia_FT <br>";
-            $dia_FT++;
+        } else if ( $diaFT > 0 && $diaFT < 5 && $tipo == "T") {
+            echo "$day de $mes[$month] , $diaFT º dia de Trabalho <br>";
+            $diaFT++;
             $day++;
-            if ( $dia_FT > 4 ) {
-                $dia_FT = 1;
+            if ( $diaFT > 4 ) {
+                $diaFT = 1;
                 $tipo   = "F";            
             }
         }
     }
+?>
