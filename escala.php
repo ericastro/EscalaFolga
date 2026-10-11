@@ -1,6 +1,6 @@
 <?php
 
-//    header('Content-Type: application/json; charset=utf-8');
+    header('Content-Type: application/json; charset=utf-8');
 
     //ARGUMENTOS DE ENTRADA
     $day    = 1;   // DIA DO MES GET(DATE).DAY
@@ -10,9 +10,10 @@
     $DFT = explode("_", $_POST['dia_escala']);
 
     //FT Folga ou Trabalho
-    $diaFT  = $DFT[0];
-    $tipo   = $DFT[1];
 
+    $dayFT  = $DFT[0]; // Inicializa com o valor padrão
+    $type   = $DFT[1]; // Inicializa com o valor padrão
+ 
     /*
     $semana     = $_GET['semana'] OR " ";
     $mes        = $_GET['mes'] OR " ";
@@ -58,34 +59,55 @@
     $ultimo_dia_do_mes[12]  = 31;
 
     //VALIDAÇÕES DE PARAMETROS DE ENTRADA "REDUNDANTES"
-    if ( $diaFT > 2 && $tipo == "F" ) {
+    if ( $dayFT > 2 && $type == "F" ) {
         echo "Erro - Folga não pode ser maior que 2 dias";
         return;
     }
 
-    if ( $diaFT > 4 && $tipo == "T" ) {
+    if ( $dayFT > 4 && $type == "T" ) {
         echo "Erro - Trabalho não pode ser maior que 4 dias";
         return;
     }
 
+
+    $indice = 0;
+    $dados = array();
+
     while ( $day < $ultimo_dia_do_mes[$month] ) { 
 
-        if (  $diaFT > 0 && $diaFT < 3 && $tipo == "F" ) {
-            echo "$day de $mes[$month] , $diaFT º dia de Folga <br>";
-            $diaFT++;                                               
+        if (  $dayFT > 0 && $dayFT < 3 && $type == "F" ) {
+            $dados[$indice] = array(
+                "day" => $day,
+                "month" => $mes[$month],
+                "type" => "F",
+                "year" => $year,
+                "dayFT" => $dayFT
+            );           
+            $dayFT++;                                               
             $day++;
-            if ( $diaFT > 2 ) {
-                $diaFT = 1;
-                $tipo   = "T";
+            if ( $dayFT > 2 ) {
+                $dayFT = 1;
+                $type   = "T";
             }            
-        } else if ( $diaFT > 0 && $diaFT < 5 && $tipo == "T") {
-            echo "$day de $mes[$month] , $diaFT º dia de Trabalho <br>";
-            $diaFT++;
+        } else if ( $dayFT > 0 && $dayFT < 5 && $type == "T") {
+            $dados[$indice] = array(
+                "day" => $day,
+                "month" => $mes[$month],
+                "type" => "T",
+                "year" => $year,
+                "dayFT" => $dayFT
+            );
+            $dayFT++;
             $day++;
-            if ( $diaFT > 4 ) {
-                $diaFT = 1;
-                $tipo   = "F";            
+            if ( $dayFT > 4 ) {
+                $dayFT = 1;
+                $type   = "F";            
             }
         }
+
+        $indice++;
     }
+
+    echo json_encode($dados, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit;
 ?>
